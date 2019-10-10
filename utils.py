@@ -135,3 +135,7 @@ def construct_feed_dict(features, support, labels, labels_mask, is_training, pla
         placeholders['num_features_nonzero']: features.shape,
         placeholders['is_training']: is_training}
     return feed_dict
+
+if __name__=='__main__':
+    data = load_data('cora')
+

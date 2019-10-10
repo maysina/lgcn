@@ -1,3 +1,7 @@
+[GCN使用的数据集Cora、Citeseer、Pubmed、Tox21格式](https://blog.csdn.net/yyl424525/article/details/100831452)
+
+
+---
 # Large-Scale Learnable Graph Convolutional Networks(LGCN)
 
 Created by [Hongyang Gao](http://eecs.wsu.edu/~hgao/), [Zhengyang Wang](http://www.eecs.wsu.edu/~zwang6/) and [Shuiwang Ji](http://www.eecs.wsu.edu/~sji/) at Washington State University.
