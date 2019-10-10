@@ -1,5 +1,5 @@
-[GCN使用的数据集Cora、Citeseer、Pubmed、Tox21格式](https://blog.csdn.net/yyl424525/article/details/100831452)
-
+* 数据集：[GCN使用的数据集Cora、Citeseer、Pubmed、Tox21格式](https://blog.csdn.net/yyl424525/article/details/100831452)
+* 论文笔记：[菜鸟笔记之《Large-Scale Learnable Graph Convolutional Networks》](https://www.jianshu.com/p/ada8730913ce)
 
 ---
 # Large-Scale Learnable Graph Convolutional Networks(LGCN)
