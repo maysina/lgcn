@@ -6,6 +6,7 @@
 
 * 论文笔记：[菜鸟笔记之《Large-Scale Learnable Graph Convolutional Networks》](https://www.jianshu.com/p/ada8730913ce)
 * 论文原文：https://arxiv.org/pdf/1808.03965.pdf
+* 原GitHub：https://github.com/HongyangGao/LGCN
 
 ---
 # Large-Scale Learnable Graph Convolutional Networks(LGCN)

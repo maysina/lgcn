@@ -46,10 +46,16 @@ class GraphNet(object):
         data = load_data('cora')
         adj, feas = data[:2]
         self.adj = adj.todense()
+        # self.adj = self.adj.A
         self.normed_adj = preprocess_adj(adj)
+        # self.normed_adj = np.float32(self.normed_adj)
+        # self.normed_adj = self.normed_adj.A
         self.feas = preprocess_features(feas, False)
+        # self.feas = self.feas.A
         self.y_train, self.y_val, self.y_test = data[2:5]
+        # self.y_train = np.int32(self.y_train)
         self.train_mask, self.val_mask, self.test_mask = data[5:]
+        # self.train_mask = np.int32(self.train_mask)
 
     def configure_networks(self):
         self.build_network()
@@ -57,6 +63,7 @@ class GraphNet(object):
         optimizer = self.get_optimizer(self.conf.learning_rate)
         self.train_op = optimizer.minimize(self.loss_op, name='train_op')
         self.seed = int(time.time())
+        # self.seed = 123 #int(time.time())
         tf.set_random_seed(self.seed)
         self.sess.run(tf.global_variables_initializer())
         trainable_vars = tf.trainable_variables()
@@ -66,12 +73,16 @@ class GraphNet(object):
         self.print_params_num()
 
     def build_network(self):
-        self.labels_mask = tf.placeholder(tf.int32, None, name='labels_mask')
-        self.matrix = tf.placeholder(tf.int32, [None, None], name='matrix')
+        self.labels_mask = tf.placeholder(tf.int64, None, name='labels_mask')
+        # self.labels_mask = tf.placeholder(tf.bool, None, name='labels_mask')
+        self.matrix = tf.placeholder(tf.int64, [None, None], name='matrix')
         self.normed_matrix = tf.placeholder(tf.float32, [None, None], name='normed_matrix')
+        # self.normed_matrix = tf.placeholder(tf.float64, [None, None], name='normed_matrix')
         self.inputs = tf.placeholder(tf.float32, [None, self.feas.shape[1]], name='inputs')
-        self.labels = tf.placeholder(tf.int32, [None, self.conf.class_num], name='labels')
+        self.labels = tf.placeholder(tf.int64, [None, self.conf.class_num], name='labels')
+        # self.labels = tf.placeholder(tf.float64, [None, self.conf.class_num], name='labels')
         self.is_train = tf.placeholder(tf.bool, name='is_train')
+        self.is_test = tf.placeholder(tf.bool, name='is_test')
         self.preds = self.inference(self.inputs)
 
     def cal_loss(self):
@@ -132,11 +143,15 @@ class GraphNet(object):
                 break
 
     def pack_trans_dict(self, action):
-        feed_dict = {
+        # feed_dict_temp = dict()
+        # feed_dict_temp.update({
+        #     self.matrix: self.adj, self.normed_matrix: self.normed_adj,
+        #     self.inputs: self.feas})
+        feed_dict_temp = {
             self.matrix: self.adj, self.normed_matrix: self.normed_adj,
             self.inputs: self.feas}
         if action == 'train':
-            feed_dict.update({
+            feed_dict_temp.update({
                 self.labels: self.y_train, self.labels_mask: self.train_mask,
                 self.is_train: True})
             if self.conf.use_batch:
@@ -144,13 +159,13 @@ class GraphNet(object):
                     self.adj, self.train_mask, self.conf.batch_size, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict.update({
+                feed_dict_temp.update({
                     self.labels: self.y_train[indices],
                     self.labels_mask: self.train_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
         elif action == 'valid':
-            feed_dict.update({
+            feed_dict_temp.update({
                 self.labels: self.y_val, self.labels_mask: self.val_mask,
                 self.is_train: False})
             if self.conf.use_batch:
@@ -158,13 +173,13 @@ class GraphNet(object):
                     self.adj, self.val_mask, 10000, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict.update({
+                feed_dict_temp.update({
                     self.labels: self.y_val[indices],
                     self.labels_mask: self.val_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
         else:
-            feed_dict.update({
+            feed_dict_temp.update({
                 self.labels: self.y_test, self.labels_mask: self.test_mask,
                 self.is_train: False})
             if self.conf.use_batch:
@@ -172,12 +187,17 @@ class GraphNet(object):
                     self.adj, self.test_mask, 10000, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict.update({
+                feed_dict_temp.update({
                     self.labels: self.y_test[indices],
                     self.labels_mask: self.test_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
-        return feed_dict
+
+        # feed_dict_temp[self.matrix] = feed_dict_temp[self.matrix].A
+        # feed_dict_temp[self.normed_matrix] = feed_dict_temp[self.normed_matrix].A
+        # feed_dict_temp[self.inputs] = feed_dict_temp[self.inputs].A
+
+        return feed_dict_temp
 
 
     def save(self, step):
