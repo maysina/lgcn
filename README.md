@@ -1,12 +1,9 @@
 * 数据集：[GCN使用的数据集Cora、Citeseer、Pubmed、Tox21格式](https://blog.csdn.net/yyl424525/article/details/100831452)
 > Cora数据集分为6大类，36个小类。主要的文件目录包括：
->>（1）papers：以<id> <filename> <citation string>的形式描述论文信息，其中citation string是该论文的任意一篇参考引文或者基于作者名和文章名提取出的关键字。
-
->>（2）citations：大约有715000条引文信息，用<referring_id> <cited_id>形式描述论文之间的引用关系。
-
->>（3）citations.withauthors：包含论文的引文信息和作者信息，描述格式为：<this_paper_id><filename><id_of_first_cited_paper><id_of_second_cited_paper>…<Author#1>(of this paper)<Author#2>…
-
->>（4）classifications：记录论文的分类信息，但分类标签并不是很准确，其描述格式为：<filename> <classification>。如：http:##www.ri.cmu.edu#afs#cs#user#alex#docs#idvl#dl97.ps    /Information_Retrieval/Retrieval/。
+   +（1）papers：以<id> <filename> <citation string>的形式描述论文信息，其中citation string是该论文的任意一篇参考引文或者基于作者名和文章名提取出的关键字。
+   +（2）citations：大约有715000条引文信息，用<referring_id> <cited_id>形式描述论文之间的引用关系。
+   +（3）citations.withauthors：包含论文的引文信息和作者信息，描述格式为：<this_paper_id><filename><id_of_first_cited_paper><id_of_second_cited_paper>…<Author#1>(of this paper)<Author#2>…
+   +（4）classifications：记录论文的分类信息，但分类标签并不是很准确，其描述格式为：<filename> <classification>。如：http:##www.ri.cmu.edu#afs#cs#user#alex#docs#idvl#dl97.ps    /Information_Retrieval/Retrieval/。
 
 * 论文笔记：[菜鸟笔记之《Large-Scale Learnable Graph Convolutional Networks》](https://www.jianshu.com/p/ada8730913ce)
 * 论文原文：https://arxiv.org/pdf/1808.03965.pdf
