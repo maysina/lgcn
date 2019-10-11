@@ -74,15 +74,11 @@ class GraphNet(object):
 
     def build_network(self):
         self.labels_mask = tf.placeholder(tf.int64, None, name='labels_mask')
-        # self.labels_mask = tf.placeholder(tf.bool, None, name='labels_mask')
         self.matrix = tf.placeholder(tf.int64, [None, None], name='matrix')
         self.normed_matrix = tf.placeholder(tf.float32, [None, None], name='normed_matrix')
-        # self.normed_matrix = tf.placeholder(tf.float64, [None, None], name='normed_matrix')
         self.inputs = tf.placeholder(tf.float32, [None, self.feas.shape[1]], name='inputs')
         self.labels = tf.placeholder(tf.int64, [None, self.conf.class_num], name='labels')
-        # self.labels = tf.placeholder(tf.float64, [None, self.conf.class_num], name='labels')
         self.is_train = tf.placeholder(tf.bool, name='is_train')
-        self.is_test = tf.placeholder(tf.bool, name='is_test')
         self.preds = self.inference(self.inputs)
 
     def cal_loss(self):
@@ -143,15 +139,11 @@ class GraphNet(object):
                 break
 
     def pack_trans_dict(self, action):
-        # feed_dict_temp = dict()
-        # feed_dict_temp.update({
-        #     self.matrix: self.adj, self.normed_matrix: self.normed_adj,
-        #     self.inputs: self.feas})
-        feed_dict_temp = {
+        feed_dict = {
             self.matrix: self.adj, self.normed_matrix: self.normed_adj,
             self.inputs: self.feas}
         if action == 'train':
-            feed_dict_temp.update({
+            feed_dict.update({
                 self.labels: self.y_train, self.labels_mask: self.train_mask,
                 self.is_train: True})
             if self.conf.use_batch:
@@ -159,13 +151,13 @@ class GraphNet(object):
                     self.adj, self.train_mask, self.conf.batch_size, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict_temp.update({
+                feed_dict.update({
                     self.labels: self.y_train[indices],
                     self.labels_mask: self.train_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
         elif action == 'valid':
-            feed_dict_temp.update({
+            feed_dict.update({
                 self.labels: self.y_val, self.labels_mask: self.val_mask,
                 self.is_train: False})
             if self.conf.use_batch:
@@ -173,13 +165,13 @@ class GraphNet(object):
                     self.adj, self.val_mask, 10000, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict_temp.update({
+                feed_dict.update({
                     self.labels: self.y_val[indices],
                     self.labels_mask: self.val_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
         else:
-            feed_dict_temp.update({
+            feed_dict.update({
                 self.labels: self.y_test, self.labels_mask: self.test_mask,
                 self.is_train: False})
             if self.conf.use_batch:
@@ -187,18 +179,17 @@ class GraphNet(object):
                     self.adj, self.test_mask, 10000, 1.0)
                 new_adj = self.adj[indices,:][:,indices]
                 new_normed_adj = self.normed_adj[indices,:][:,indices]
-                feed_dict_temp.update({
+                feed_dict.update({
                     self.labels: self.y_test[indices],
                     self.labels_mask: self.test_mask[indices],
                     self.matrix: new_adj, self.normed_matrix: new_normed_adj,
                     self.inputs: self.feas[indices]})
 
-        # feed_dict_temp[self.matrix] = feed_dict_temp[self.matrix].A
-        # feed_dict_temp[self.normed_matrix] = feed_dict_temp[self.normed_matrix].A
-        # feed_dict_temp[self.inputs] = feed_dict_temp[self.inputs].A
+        # feed_dict[self.matrix] = feed_dict[self.matrix].A
+        # feed_dict[self.normed_matrix] = feed_dict[self.normed_matrix].A
+        # feed_dict[self.inputs] = feed_dict[self.inputs].A
 
-        return feed_dict_temp
-
+        return feed_dict
 
     def save(self, step):
         print('---->saving', step)
